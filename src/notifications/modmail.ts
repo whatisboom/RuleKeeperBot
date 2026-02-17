@@ -10,7 +10,7 @@ class ModmailNotifier implements Notifier {
   }
 
   async notify(decision: DecisionRow): Promise<void> {
-    const subject = `[mod-bot] Flagged: ${decision.violation_type} (${(decision.confidence * 100).toFixed(0)}% confidence)`;
+    const subject = `[RuleKeeperBot] Flagged: ${decision.violation_type} (${(decision.confidence * 100).toFixed(0)}% confidence)`;
     const body = [
       `**Post:** https://reddit.com/${decision.reddit_id}`,
       `**Author:** u/${decision.author}`,

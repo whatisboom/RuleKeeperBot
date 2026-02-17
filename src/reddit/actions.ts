@@ -41,7 +41,7 @@ async function autoRemove(
     : reddit.getSubmission(redditId.replace('t3_', ''));
 
   const comment = await (item as unknown as { reply: (text: string) => Promise<unknown> }).reply(
-    `This post has been removed by the moderation bot.\n\n**Reason:** ${removalReason}\n\nIf you believe this was an error, please contact the moderators.`
+    `This post has been removed by RuleKeeperBot.\n\n**Reason:** ${removalReason}\n\nIf you believe this was an error, please contact the moderators.`
   );
   await (comment as unknown as { distinguish: (opts: { status: boolean; sticky: boolean }) => Promise<void> }).distinguish({ status: true, sticky: true });
   await (item as unknown as { remove: (opts: { spam: boolean }) => Promise<void> }).remove({ spam: false });

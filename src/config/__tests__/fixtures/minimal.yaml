@@ -1,0 +1,7 @@
+subreddits:
+  testsubreddit:
+    enabled: true
+    monitor: [submissions]
+    confidence_thresholds:
+      auto_remove: 0.9
+      flag_for_review: 0.6

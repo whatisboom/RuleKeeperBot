@@ -1,0 +1,12 @@
+subreddits:
+  testsubreddit:
+    enabled: true
+    poll_interval_seconds: 30
+    monitor: [submissions, comments]
+    rules_cache_ttl_hours: 12
+    confidence_thresholds:
+      auto_remove: 0.9
+      flag_for_review: 0.6
+    rule_overrides:
+      - "Test rule override"
+    prompt_context: "This is a test subreddit."

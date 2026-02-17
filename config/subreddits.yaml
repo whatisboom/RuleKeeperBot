@@ -1,0 +1,35 @@
+subreddits:
+  austinbeer:
+    enabled: true
+    poll_interval_seconds: 60
+    monitor: [submissions, comments]
+    rules_cache_ttl_hours: 24
+    confidence_thresholds:
+      auto_remove: 0.95
+      flag_for_review: 0.6
+    rule_overrides: []
+    prompt_context: "Casual beer community. Mild profanity is acceptable. Beer trade and sharing posts are encouraged."
+
+  austinclassifieds:
+    enabled: true
+    poll_interval_seconds: 45
+    monitor: [submissions]
+    rules_cache_ttl_hours: 24
+    confidence_thresholds:
+      auto_remove: 0.9
+      flag_for_review: 0.5
+    rule_overrides:
+      - "Posts must include a price or 'free' designation"
+      - "No duplicate postings within 7 days"
+    prompt_context: "Buy/sell/trade marketplace. Watch for scams, fake listings, and posts without prices."
+
+  austinhousing:
+    enabled: true
+    poll_interval_seconds: 60
+    monitor: [submissions, comments]
+    rules_cache_ttl_hours: 24
+    confidence_thresholds:
+      auto_remove: 0.9
+      flag_for_review: 0.55
+    rule_overrides: []
+    prompt_context: "Housing discussion community. Real estate agent self-promotion should be flagged. Rental scam detection is high priority."

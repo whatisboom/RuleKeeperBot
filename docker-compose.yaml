@@ -6,3 +6,14 @@ services:
       - ./data:/app/data
       - ./config:/app/config
     restart: unless-stopped
+
+  datasette:
+    image: datasetteproject/datasette:latest
+    command: datasette /data/mod-bot.db --host 0.0.0.0 --port 8001 --metadata /data/metadata.json
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./data:/data:ro
+    restart: unless-stopped
+    depends_on:
+      - mod-bot

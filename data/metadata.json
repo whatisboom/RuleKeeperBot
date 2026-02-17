@@ -1,0 +1,18 @@
+{
+  "title": "RuleKeeperBot",
+  "description": "Moderation decision audit log",
+  "databases": {
+    "mod-bot": {
+      "tables": {
+        "decisions": {
+          "label_column": "reddit_id",
+          "description": "Every post/comment analyzed by RuleKeeperBot with the resulting action",
+          "sort_desc": "created_at"
+        },
+        "watermarks": {
+          "description": "Last processed post/comment ID per subreddit"
+        }
+      }
+    }
+  }
+}

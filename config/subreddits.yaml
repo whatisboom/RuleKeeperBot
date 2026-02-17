@@ -1,3 +1,5 @@
+dry_run: true
+
 subreddits:
   austinbeer:
     enabled: true

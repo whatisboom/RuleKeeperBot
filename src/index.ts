@@ -55,6 +55,7 @@ async function processContent(
       redditId: content.id,
       subreddit: content.subreddit,
       thresholds: subConfig.confidence_thresholds,
+      dryRun: config.dry_run,
     },
     analysis,
   );
@@ -72,13 +73,14 @@ async function processContent(
 
   repo.insertDecision(decision);
 
-  if (actionTaken === 'flagged') {
+  if (actionTaken === 'flagged' && !config.dry_run) {
     const row = repo.getDecision(content.id)!;
     await notifier.notify(row);
   }
 
+  const dryTag = config.dry_run ? ' [DRY RUN]' : '';
   console.log(
-    `  -> ${analysis.violation_type} (${(analysis.confidence * 100).toFixed(0)}%) -> ${actionTaken}`
+    `  -> ${analysis.violation_type} (${(analysis.confidence * 100).toFixed(0)}%) -> ${actionTaken}${dryTag}`
   );
 }
 
@@ -116,7 +118,7 @@ async function pollSubreddit(
 }
 
 function startPolling(): void {
-  console.log('mod-bot starting...');
+  console.log(`RuleKeeperBot starting...${config.dry_run ? ' [DRY RUN MODE]' : ''}`);
 
   for (const [name, subConfig] of Object.entries(config.subreddits)) {
     if (!subConfig.enabled) {

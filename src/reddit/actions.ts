@@ -9,6 +9,7 @@ interface ActionContext {
   redditId: string;
   subreddit: string;
   thresholds: ConfidenceThresholds;
+  dryRun: boolean;
 }
 
 async function determineAndExecuteAction(
@@ -20,7 +21,9 @@ async function determineAndExecuteAction(
   }
 
   if (analysis.confidence >= ctx.thresholds.auto_remove) {
-    await autoRemove(ctx.reddit, ctx.redditId, analysis.removal_reason);
+    if (!ctx.dryRun) {
+      await autoRemove(ctx.reddit, ctx.redditId, analysis.removal_reason);
+    }
     return 'removed';
   }
 

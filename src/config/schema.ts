@@ -18,6 +18,7 @@ const SubredditConfigSchema = z.object({
 });
 
 const AppConfigSchema = z.object({
+  dry_run: z.boolean().default(false),
   subreddits: z.record(z.string(), SubredditConfigSchema),
 });
 

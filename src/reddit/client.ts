@@ -3,8 +3,7 @@ import Snoowrap from 'snoowrap';
 interface RedditCredentials {
   clientId: string;
   clientSecret: string;
-  username: string;
-  password: string;
+  refreshToken: string;
   userAgent: string;
 }
 
@@ -13,8 +12,7 @@ function createRedditClient(credentials: RedditCredentials): Snoowrap {
     userAgent: credentials.userAgent,
     clientId: credentials.clientId,
     clientSecret: credentials.clientSecret,
-    username: credentials.username,
-    password: credentials.password,
+    refreshToken: credentials.refreshToken,
   });
 
   client.config({

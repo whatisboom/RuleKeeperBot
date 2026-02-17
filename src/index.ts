@@ -19,8 +19,7 @@ const repo = new DecisionRepository(db);
 const reddit = createRedditClient({
   clientId: process.env['REDDIT_CLIENT_ID']!,
   clientSecret: process.env['REDDIT_CLIENT_SECRET']!,
-  username: process.env['REDDIT_USERNAME']!,
-  password: process.env['REDDIT_PASSWORD']!,
+  refreshToken: process.env['REDDIT_REFRESH_TOKEN']!,
   userAgent: process.env['REDDIT_USER_AGENT'] ?? 'mod-bot/0.1.0',
 });
 

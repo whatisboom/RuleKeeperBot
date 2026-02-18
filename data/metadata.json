@@ -3,14 +3,71 @@
   "description": "Moderation decision audit log",
   "databases": {
     "mod-bot": {
+      "queries": {
+        "high_confidence_unactioned": {
+          "title": "High confidence, no action taken",
+          "description": "Items scored >= 0.8 confidence but no action was taken — useful for validating dry-run mode catches real violations",
+          "sql": "SELECT reddit_id, subreddit, author, content_preview, violation_type, confidence, reasoning, created_at FROM decisions WHERE confidence >= 0.8 AND action_taken = 'none' ORDER BY confidence DESC, created_at DESC"
+        },
+        "recent_flagged": {
+          "title": "Recent flagged items",
+          "description": "Last 100 items flagged for human review — the primary moderation queue",
+          "sql": "SELECT reddit_id, subreddit, author, content_preview, violation_type, confidence, reasoning, created_at FROM decisions WHERE action_taken = 'flagged' ORDER BY created_at DESC LIMIT 100"
+        },
+        "recent_removals": {
+          "title": "Recent auto-removals",
+          "description": "Last 100 automatically removed items — review for false positives",
+          "sql": "SELECT reddit_id, subreddit, author, content_preview, violation_type, confidence, reasoning, created_at FROM decisions WHERE action_taken = 'removed' ORDER BY created_at DESC LIMIT 100"
+        },
+        "violations_by_subreddit": {
+          "title": "Violations by subreddit",
+          "description": "Aggregated violation counts and average confidence per subreddit",
+          "sql": "SELECT subreddit, violation_type, COUNT(*) AS total, ROUND(AVG(confidence), 3) AS avg_confidence, SUM(CASE WHEN action_taken = 'removed' THEN 1 ELSE 0 END) AS removed, SUM(CASE WHEN action_taken = 'flagged' THEN 1 ELSE 0 END) AS flagged FROM decisions WHERE violation_type != 'none' GROUP BY subreddit, violation_type ORDER BY total DESC"
+        },
+        "repeat_offenders": {
+          "title": "Repeat offenders",
+          "description": "Authors with 2 or more violations, their violation types, and average confidence",
+          "sql": "SELECT author, COUNT(*) AS violation_count, GROUP_CONCAT(DISTINCT violation_type) AS violation_types, ROUND(AVG(confidence), 3) AS avg_confidence, MIN(created_at) AS first_seen, MAX(created_at) AS last_seen FROM decisions WHERE violation_type != 'none' GROUP BY author HAVING COUNT(*) >= 2 ORDER BY violation_count DESC"
+        },
+        "confidence_distribution": {
+          "title": "Confidence distribution",
+          "description": "Bucketed confidence ranges with removal and flag counts — useful for tuning action thresholds",
+          "sql": "SELECT CASE WHEN confidence < 0.2 THEN '0.0–0.2' WHEN confidence < 0.4 THEN '0.2–0.4' WHEN confidence < 0.6 THEN '0.4–0.6' WHEN confidence < 0.8 THEN '0.6–0.8' ELSE '0.8–1.0' END AS confidence_range, COUNT(*) AS total, SUM(CASE WHEN action_taken = 'removed' THEN 1 ELSE 0 END) AS removed, SUM(CASE WHEN action_taken = 'flagged' THEN 1 ELSE 0 END) AS flagged, SUM(CASE WHEN action_taken = 'none' THEN 1 ELSE 0 END) AS no_action FROM decisions GROUP BY confidence_range ORDER BY confidence_range"
+        },
+        "daily_activity": {
+          "title": "Daily activity (last 30 days)",
+          "description": "Per-day totals of items analyzed, violations found, removals, and flags",
+          "sql": "SELECT DATE(created_at) AS day, COUNT(*) AS analyzed, SUM(CASE WHEN violation_type != 'none' THEN 1 ELSE 0 END) AS violations, SUM(CASE WHEN action_taken = 'removed' THEN 1 ELSE 0 END) AS removed, SUM(CASE WHEN action_taken = 'flagged' THEN 1 ELSE 0 END) AS flagged FROM decisions WHERE created_at >= DATE('now', '-30 days') GROUP BY day ORDER BY day DESC"
+        }
+      },
       "tables": {
         "decisions": {
           "label_column": "reddit_id",
           "description": "Every post/comment analyzed by RuleKeeperBot with the resulting action",
-          "sort_desc": "created_at"
+          "sort_desc": "created_at",
+          "facets": ["subreddit", "violation_type", "action_taken"],
+          "facet_size": 15,
+          "columns": {
+            "id": "Auto-incrementing primary key",
+            "reddit_id": "Reddit fullname identifier (e.g. t3_abc123 for posts, t1_xyz789 for comments)",
+            "subreddit": "Subreddit where the content was posted",
+            "author": "Reddit username of the content author",
+            "content_preview": "Truncated preview of the post title or comment body",
+            "violation_type": "Type of violation detected (spam, toxicity, scam, etc.) or 'none' if clean",
+            "confidence": "Model confidence score from 0.0 to 1.0",
+            "reasoning": "Model-generated explanation of why the content was flagged or cleared",
+            "action_taken": "Action performed: removed, flagged, or none",
+            "created_at": "UTC timestamp when the decision was recorded"
+          }
         },
         "watermarks": {
-          "description": "Last processed post/comment ID per subreddit"
+          "description": "Last processed post/comment ID per subreddit — used to resume polling without reprocessing",
+          "columns": {
+            "subreddit": "Subreddit being tracked",
+            "content_type": "Type of content being polled (post or comment)",
+            "last_id": "Reddit fullname of the last item processed",
+            "updated_at": "UTC timestamp of the last watermark update"
+          }
         }
       }
     }

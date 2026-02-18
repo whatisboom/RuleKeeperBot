@@ -3,7 +3,7 @@ dry_run: true
 subreddits:
   austinbeer:
     enabled: true
-    poll_interval_seconds: 60
+    poll_interval_seconds: 300
     monitor: [submissions, comments]
     rules_cache_ttl_hours: 24
     confidence_thresholds:
@@ -14,8 +14,8 @@ subreddits:
 
   austinclassifieds:
     enabled: true
-    poll_interval_seconds: 45
-    monitor: [submissions]
+    poll_interval_seconds: 300
+    monitor: [submissions, comments]
     rules_cache_ttl_hours: 24
     confidence_thresholds:
       auto_remove: 0.9
@@ -27,7 +27,7 @@ subreddits:
 
   austinhousing:
     enabled: true
-    poll_interval_seconds: 60
+    poll_interval_seconds: 300
     monitor: [submissions, comments]
     rules_cache_ttl_hours: 24
     confidence_thresholds:

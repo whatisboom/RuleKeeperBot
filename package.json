@@ -17,7 +17,7 @@
     "@anthropic-ai/sdk": "^0.74.0",
     "better-sqlite3": "^12.6.2",
     "dotenv": "^17.3.1",
-    "snoowrap": "^1.23.0",
+    "playwright": "^1.52.0",
     "yaml": "^2.8.2",
     "zod": "^4.3.6"
   },

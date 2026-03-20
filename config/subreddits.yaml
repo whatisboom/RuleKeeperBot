@@ -4,7 +4,7 @@ subreddits:
   austinbeer:
     enabled: true
     poll_interval_seconds: 300
-    monitor: [submissions, comments]
+    monitor: [submissions]
     rules_cache_ttl_hours: 24
     confidence_thresholds:
       auto_remove: 0.95
@@ -15,7 +15,7 @@ subreddits:
   austinclassifieds:
     enabled: true
     poll_interval_seconds: 300
-    monitor: [submissions, comments]
+    monitor: [submissions]
     rules_cache_ttl_hours: 24
     confidence_thresholds:
       auto_remove: 0.9
@@ -28,7 +28,7 @@ subreddits:
   austinhousing:
     enabled: true
     poll_interval_seconds: 300
-    monitor: [submissions, comments]
+    monitor: [submissions]
     rules_cache_ttl_hours: 24
     confidence_thresholds:
       auto_remove: 0.9
